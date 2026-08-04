@@ -1,8 +1,8 @@
 "use client"
 
+import { AlertCircle, UploadCloud } from "lucide-react"
 import { useCallback, useState } from "react"
-import { useDropzone, DropzoneOptions, FileRejection } from "react-dropzone"
-import { UploadCloud, AlertCircle } from "lucide-react"
+import { DropzoneOptions, FileRejection, useDropzone } from "react-dropzone"
 
 interface UploadAreaProps {
   onUpload: (files: File[]) => void

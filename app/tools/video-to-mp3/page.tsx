@@ -40,6 +40,7 @@ export default function VideoToMp3Page() {
 
     try {
       const ffmpeg = ffmpegRef.current
+      if (!ffmpeg) return
 
       ffmpeg.on('progress', ({ progress }: { progress: number }) => {
         setProgress(Math.round(progress * 100))

@@ -46,6 +46,7 @@ export async function convertPdfToJpg(file: File): Promise<string> {
   const renderContext = {
     canvasContext: ctx,
     viewport: viewport,
+    canvas: canvas,
   };
   
   await page.render(renderContext).promise;
