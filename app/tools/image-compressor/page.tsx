@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Download, RefreshCw, FileImage } from "lucide-react"
 
 import { formatSize } from "@/lib/utils"
@@ -16,10 +16,33 @@ export default function ImageCompressorPage() {
   const [isCompressing, setIsCompressing] = useState(false)
   const [originalUrl, setOriginalUrl] = useState<string | null>(null)
   const [compressedUrl, setCompressedUrl] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (originalUrl) URL.revokeObjectURL(originalUrl)
+      if (compressedUrl) URL.revokeObjectURL(compressedUrl)
+    }
+  }, [originalUrl, compressedUrl])
 
   const handleUpload = async (files: File[]) => {
     if (files.length === 0) return
     const file = files[0]
+    setError(null)
+
+    if (file.size > 20 * 1024 * 1024) {
+      setError("File is too large. Maximum size is 20MB.")
+      return
+    }
+
+    const { validateFileSignature, SIGNATURES } = await import("@/lib/security")
+    const isValid = await validateFileSignature(file, [...SIGNATURES.JPEG, ...SIGNATURES.PNG, ...SIGNATURES.WEBP])
+    
+    if (!isValid) {
+      setError("Invalid image file signature detected.")
+      return
+    }
+
     setOriginalFile(file)
     setOriginalUrl(URL.createObjectURL(file))
     setCompressedFile(null)
@@ -46,22 +69,24 @@ export default function ImageCompressorPage() {
       
       setCompressedFile(newFile)
       setCompressedUrl(URL.createObjectURL(compressedBlob))
-    } catch (error) {
-      console.error(error)
+    } catch (err) {
+      setError("An error occurred during compression. Please try again.")
     } finally {
       setIsCompressing(false)
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!compressedUrl || !compressedFile) return
+    const { sanitizeFilename } = await import("@/lib/security")
     const link = document.createElement("a")
     link.href = compressedUrl
     // Append '-compressed' to the filename before extension
     const nameParts = compressedFile.name.split('.')
     const ext = nameParts.pop()
     const baseName = nameParts.join('.')
-    link.download = `${baseName}-compressed.${ext}`
+    const cleanName = sanitizeFilename(baseName)
+    link.download = `${cleanName}-compressed.${ext}`
     
     document.body.appendChild(link)
     link.click()
@@ -84,16 +109,23 @@ export default function ImageCompressorPage() {
       ]}
     >
       {!originalFile ? (
-        <UploadArea 
-          onUpload={handleUpload}
-          accept={{
-            'image/jpeg': ['.jpg', '.jpeg'],
-            'image/png': ['.png'],
-            'image/webp': ['.webp']
-          }}
-          title="Select Image to Compress"
-          description="Drag & drop your image here, or click to browse"
-        />
+        <div className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm text-center">
+              {error}
+            </div>
+          )}
+          <UploadArea 
+            onUpload={handleUpload}
+            accept={{
+              'image/jpeg': ['.jpg', '.jpeg'],
+              'image/png': ['.png'],
+              'image/webp': ['.webp']
+            }}
+            title="Select Image to Compress"
+            description="Drag & drop your image here, or click to browse"
+          />
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Settings / Action Panel */}
@@ -113,6 +145,12 @@ export default function ImageCompressorPage() {
                   Using smart compression to reduce size while maintaining visual quality.
                 </p>
               </div>
+
+              {error && (
+                <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
 
               {!compressedFile ? (
                 <div className="flex gap-4">

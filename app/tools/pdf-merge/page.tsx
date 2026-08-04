@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Download, RefreshCw, FileText, Trash2, GripVertical } from "lucide-react"
 
 import { formatSize } from "@/lib/utils"
@@ -14,9 +14,34 @@ export default function PDFMergePage() {
   const [files, setFiles] = useState<File[]>([])
   const [isMerging, setIsMerging] = useState(false)
   const [mergedPdfUrl, setMergedPdfUrl] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleUpload = (newFiles: File[]) => {
-    setFiles((prev) => [...prev, ...newFiles])
+  useEffect(() => {
+    return () => {
+      if (mergedPdfUrl) URL.revokeObjectURL(mergedPdfUrl)
+    }
+  }, [mergedPdfUrl])
+
+  const handleUpload = async (newFiles: File[]) => {
+    setError(null)
+    const validFiles: File[] = []
+    
+    const { validateFileSignature, SIGNATURES } = await import("@/lib/security")
+    
+    for (const file of newFiles) {
+      if (file.size > 50 * 1024 * 1024) {
+        setError(`File ${file.name} is too large. Max 50MB per PDF.`)
+        return
+      }
+      const isValid = await validateFileSignature(file, SIGNATURES.PDF)
+      if (!isValid) {
+        setError(`Invalid PDF signature detected in ${file.name}.`)
+        return
+      }
+      validFiles.push(file)
+    }
+
+    setFiles((prev) => [...prev, ...validFiles])
     setMergedPdfUrl(null)
   }
 
@@ -45,18 +70,20 @@ export default function PDFMergePage() {
       const url = URL.createObjectURL(blob)
       
       setMergedPdfUrl(url)
-    } catch (error) {
-      console.error(error)
+    } catch (err) {
+      setError("An error occurred during merging. Please try again.")
     } finally {
       setIsMerging(false)
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!mergedPdfUrl) return
+    const { sanitizeFilename } = await import("@/lib/security")
     const link = document.createElement("a")
     link.href = mergedPdfUrl
-    link.download = "merged-document.pdf"
+    const cleanName = sanitizeFilename("merged-document")
+    link.download = `${cleanName}.pdf`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -79,6 +106,11 @@ export default function PDFMergePage() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
+          {error && (
+            <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
           <UploadArea 
             onUpload={handleUpload}
             accept={{ 'application/pdf': ['.pdf'] }}

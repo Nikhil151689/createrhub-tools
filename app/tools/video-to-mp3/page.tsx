@@ -1,20 +1,21 @@
 "use client"
 
+import type { FFmpeg } from "@ffmpeg/ffmpeg"
 import { Download, FileVideo, Music, RefreshCw } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import type { FFmpeg } from "@ffmpeg/ffmpeg"
 
-import { formatSize } from "@/lib/utils"
 import { ToolLayout } from "@/components/tools/ToolLayout"
 import { UploadArea } from "@/components/tools/UploadArea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { formatSize } from "@/lib/utils"
 
 export default function VideoToMp3Page() {
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [isConverting, setIsConverting] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [error, setError] = useState<string | null>(null)
 
   const ffmpegRef = useRef<FFmpeg | null>(null)
 
@@ -24,11 +25,30 @@ export default function VideoToMp3Page() {
       ffmpegRef.current = new FFmpeg()
     }
     init()
-  }, [])
 
-  const handleUpload = (files: File[]) => {
+    return () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl)
+    }
+  }, [audioUrl])
+
+  const handleUpload = async (files: File[]) => {
     if (files.length === 0) return
-    setVideoFile(files[0])
+    const file = files[0]
+    
+    setError(null)
+    if (file.size > 500 * 1024 * 1024) {
+      setError("File is too large. Maximum size is 500MB.")
+      return
+    }
+
+    const { validateVideoSignature } = await import("@/lib/security")
+    const isValid = await validateVideoSignature(file)
+    if (!isValid) {
+      setError("Invalid video file signature detected.")
+      return
+    }
+
+    setVideoFile(file)
     setAudioUrl(null)
     setProgress(0)
   }
@@ -64,19 +84,21 @@ export default function VideoToMp3Page() {
       const url = URL.createObjectURL(blob)
 
       setAudioUrl(url)
-    } catch (error) {
-      console.error('Error converting video:', error)
+    } catch (err) {
+      setError("An error occurred during conversion. Please try again.")
     } finally {
       setIsConverting(false)
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!audioUrl || !videoFile) return
+    const { sanitizeFilename } = await import("@/lib/security")
     const link = document.createElement("a")
     link.href = audioUrl
     const baseName = videoFile.name.split('.').slice(0, -1).join('.')
-    link.download = `${baseName || 'converted'}.mp3`
+    const cleanName = sanitizeFilename(baseName)
+    link.download = `${cleanName}.mp3`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -98,14 +120,21 @@ export default function VideoToMp3Page() {
       ]}
     >
       {!videoFile ? (
-        <UploadArea
-          onUpload={handleUpload}
-          accept={{
-            'video/*': ['.mp4', '.webm', '.mkv', '.avi', '.mov']
-          }}
-          title="Select Video File"
-          description="Drag & drop your video here, or click to browse"
-        />
+        <div className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm text-center">
+              {error}
+            </div>
+          )}
+          <UploadArea
+            onUpload={handleUpload}
+            accept={{
+              'video/*': ['.mp4', '.webm', '.mkv', '.avi', '.mov']
+            }}
+            title="Select Video File"
+            description="Drag & drop your video here, or click to browse"
+          />
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <Card>
@@ -117,6 +146,12 @@ export default function VideoToMp3Page() {
                   <p className="text-sm text-muted-foreground">{formatSize(videoFile.size)}</p>
                 </div>
               </div>
+
+              {error && (
+                <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm mb-4">
+                  {error}
+                </div>
+              )}
 
               {!audioUrl ? (
                 <div className="space-y-4">

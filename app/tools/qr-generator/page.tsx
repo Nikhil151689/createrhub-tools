@@ -13,8 +13,14 @@ export default function QRGeneratorPage() {
   const [text, setText] = useState("")
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleGenerate = async () => {
+    setError(null)
+    if (text.length > 2048) {
+      setError("Text is too long. Maximum allowed length is 2048 characters.")
+      return
+    }
     if (!text.trim()) return
     setIsGenerating(true)
     try {
@@ -29,17 +35,19 @@ export default function QRGeneratorPage() {
       })
       setQrCodeUrl(url)
     } catch (err) {
-      console.error(err)
+      setError("An error occurred while generating the QR code.")
     } finally {
       setIsGenerating(false)
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!qrCodeUrl) return
+    const { sanitizeFilename } = await import("@/lib/security")
     const link = document.createElement("a")
     link.href = qrCodeUrl
-    link.download = "qrcode.png"
+    const cleanName = sanitizeFilename("qrcode")
+    link.download = `${cleanName}.png`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -65,6 +73,11 @@ export default function QRGeneratorPage() {
         <Card>
           <CardContent className="p-6">
             <div className="space-y-6">
+              {error && (
+                <div className="p-3 bg-red-500/10 text-red-600 rounded-lg text-sm mb-4">
+                  {error}
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="text-input">URL or Text</Label>
                 <Input 
