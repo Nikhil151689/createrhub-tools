@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import { Search, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
@@ -7,7 +8,12 @@ import { CONVERTERS } from "@/lib/converter-config"
 
 export function GlobalSearch({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const [query, setQuery] = useState("")
+  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const tools = [
     { title: "Merge PDF", href: "/tools/pdf-merge" },
@@ -29,7 +35,9 @@ export function GlobalSearch({ isOpen, onClose }: { isOpen: boolean, onClose: ()
     }
   }, [isOpen, onClose])
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div 
@@ -78,6 +86,7 @@ export function GlobalSearch({ isOpen, onClose }: { isOpen: boolean, onClose: ()
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
