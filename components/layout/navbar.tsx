@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { ModeToggle } from "@/components/layout/mode-toggle"
 import { GlobalSearch } from "@/components/layout/GlobalSearch"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -58,10 +64,19 @@ export function Navbar() {
               </Link>
             </div>
             <ModeToggle />
-            <Button variant="ghost" size="icon" className="md:hidden rounded-full">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle Menu</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden rounded-full">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/file-converter">File Converter</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
       </div>

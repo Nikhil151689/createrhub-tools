@@ -50,9 +50,6 @@ export function Hero() {
           <Link href="#tools" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto rounded-full text-base h-12 px-8")}>
             Explore Tools <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
-          <Link href="/categories" className={cn(buttonVariants({ size: "lg", variant: "outline" }), "w-full sm:w-auto rounded-full text-base h-12 px-8")}>
-            View Categories
-          </Link>
         </motion.div>
       </div>
     </section>
