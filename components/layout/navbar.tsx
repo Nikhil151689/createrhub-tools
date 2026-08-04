@@ -8,15 +8,10 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { ModeToggle } from "@/components/layout/mode-toggle"
 import { GlobalSearch } from "@/components/layout/GlobalSearch"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
 export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -64,22 +59,29 @@ export function Navbar() {
               </Link>
             </div>
             <ModeToggle />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden rounded-full">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle Menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/file-converter">File Converter</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden rounded-full"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
           </nav>
         </div>
       </div>
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t bg-background px-4 py-4 space-y-4 shadow-md">
+          <Link 
+            href="/file-converter" 
+            className="block text-sm font-medium hover:text-primary transition-colors"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            File Converter
+          </Link>
+        </div>
+      )}
       <GlobalSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </header>
   )
