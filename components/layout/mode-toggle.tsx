@@ -36,21 +36,21 @@ export function ModeToggle() {
       </Button>
       
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-32 rounded-xl border bg-popover p-1 text-popover-foreground shadow-md z-50">
+        <div className="absolute right-0 top-full mt-2 w-32 rounded-xl border bg-background p-1 text-foreground shadow-md z-50">
           <button
-            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 dark:hover:bg-neutral-800"
             onClick={() => { setTheme("light"); setIsOpen(false); }}
           >
             Light
           </button>
           <button
-            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 dark:hover:bg-neutral-800"
             onClick={() => { setTheme("dark"); setIsOpen(false); }}
           >
             Dark
           </button>
           <button
-            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            className="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-gray-100 dark:hover:bg-neutral-800"
             onClick={() => { setTheme("system"); setIsOpen(false); }}
           >
             System
