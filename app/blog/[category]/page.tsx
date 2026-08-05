@@ -11,16 +11,18 @@ export async function generateStaticParams() {
   }))
 }
 
-export function generateMetadata({ params }: { params: { category: string } }) {
-  const categoryStr = params.category.charAt(0).toUpperCase() + params.category.slice(1)
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
+  const resolvedParams = await params;
+  const categoryStr = resolvedParams.category.charAt(0).toUpperCase() + resolvedParams.category.slice(1)
   return {
     title: `${categoryStr} Articles - CreatorHub Blog`,
     description: `Read all articles related to ${categoryStr} on CreatorHub.`,
   }
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
-  const posts = getPostsByCategory(params.category)
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+  const resolvedParams = await params;
+  const posts = getPostsByCategory(resolvedParams.category)
   const categories = getAllCategories()
 
   if (posts.length === 0) {
@@ -44,7 +46,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
           All
         </Link>
         {categories.map(cat => {
-          const isCurrent = cat.toLowerCase() === params.category.toLowerCase()
+          const isCurrent = cat.toLowerCase() === resolvedParams.category.toLowerCase()
           return (
             <Link 
               key={cat}

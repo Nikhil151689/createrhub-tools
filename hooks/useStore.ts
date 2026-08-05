@@ -8,6 +8,8 @@ export interface Tool {
   icon: string
   category: string
   description?: string
+  title?: string
+  color?: string
 }
 
 interface AppState {

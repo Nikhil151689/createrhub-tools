@@ -5,7 +5,7 @@ import { Download, RefreshCw, Archive, Plus } from "lucide-react"
 
 import { ToolLayout } from "@/components/tools/ToolLayout"
 import { UploadArea } from "@/components/tools/UploadArea"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useFileQueue } from "@/hooks/useFileQueue"
 import { QueueList } from "@/components/tools/QueueList"
@@ -194,13 +194,11 @@ export default function ImageCompressorPage() {
                     <Button variant="outline" size="sm" onClick={() => clearQueue()} disabled={isProcessing}>
                       Clear
                     </Button>
-                    <label>
-                      <Button variant="secondary" size="sm" asChild disabled={isProcessing}>
-                        <span>
-                          <Plus className="w-4 h-4 mr-2" />
-                          Add More
-                        </span>
-                      </Button>
+                    <label className={isProcessing ? "opacity-50 pointer-events-none" : "cursor-pointer"}>
+                      <span className={buttonVariants({ variant: "secondary", size: "sm" })}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add More
+                      </span>
                       <input 
                         type="file" 
                         multiple 

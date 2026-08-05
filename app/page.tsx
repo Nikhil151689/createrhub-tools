@@ -22,14 +22,14 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <ToolCard title="Merge PDF" description="Combine multiple PDF files into a single document." icon={FileText} href="/tools/pdf-merge" color="bg-red-500" />
-            <ToolCard title="Image Compressor" description="Reduce image file size without losing quality." icon={ImageIcon} href="/tools/image-compressor" color="bg-blue-500" />
-            <ToolCard title="Video to MP3" description="Extract high quality audio from any video file." icon={Video} href="/tools/video-to-mp3" color="bg-purple-500" />
-            <ToolCard title="QR Code Generator" description="Create custom QR codes for links, text, and more." icon={Wrench} href="/tools/qr-generator" color="bg-green-500" />
-            <ToolCard title="JPG to PNG" description="Convert JPG images to PNG format instantly." icon={ImageIcon} href="/jpg-to-png" color="bg-blue-500" />
-            <ToolCard title="MP4 to WEBM" description="Convert video formats seamlessly." icon={Video} href="/mp4-to-webm" color="bg-orange-500" />
-            <ToolCard title="TXT to PDF" description="Convert text files to PDF documents." icon={FileText} href="/txt-to-pdf" color="bg-gray-500" />
-            <ToolCard title="MP3 to WAV" description="Convert audio formats without losing quality." icon={Music} href="/mp3-to-wav" color="bg-purple-500" />
+            <ToolCard title="Merge PDF" description="Combine multiple PDF files into a single document." iconNode={<FileText className="h-6 w-6" />} href="/tools/pdf-merge" color="bg-red-500" />
+            <ToolCard title="Image Compressor" description="Reduce image file size without losing quality." iconNode={<ImageIcon className="h-6 w-6" />} href="/tools/image-compressor" color="bg-blue-500" />
+            <ToolCard title="Video to MP3" description="Extract high quality audio from any video file." iconNode={<Video className="h-6 w-6" />} href="/tools/video-to-mp3" color="bg-purple-500" />
+            <ToolCard title="QR Code Generator" description="Create custom QR codes for links, text, and more." iconNode={<Wrench className="h-6 w-6" />} href="/tools/qr-generator" color="bg-green-500" />
+            <ToolCard title="JPG to PNG" description="Convert JPG images to PNG format instantly." iconNode={<ImageIcon className="h-6 w-6" />} href="/jpg-to-png" color="bg-blue-500" />
+            <ToolCard title="MP4 to WEBM" description="Convert video formats seamlessly." iconNode={<Video className="h-6 w-6" />} href="/mp4-to-webm" color="bg-orange-500" />
+            <ToolCard title="TXT to PDF" description="Convert text files to PDF documents." iconNode={<FileText className="h-6 w-6" />} href="/txt-to-pdf" color="bg-gray-500" />
+            <ToolCard title="MP3 to WAV" description="Convert audio formats without losing quality." iconNode={<Music className="h-6 w-6" />} href="/mp3-to-wav" color="bg-purple-500" />
           </div>
           
           <div className="mt-12 flex justify-center">

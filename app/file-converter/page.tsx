@@ -35,16 +35,19 @@ export default function FileConverterCategoryPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {CONVERTERS.map((tool) => (
-          <ToolCard 
-            key={tool.id}
-            title={tool.title} 
-            description={tool.description} 
-            icon={getIcon(tool.iconName)} 
-            href={`/${tool.id}`} 
-            color={tool.color} 
-          />
-        ))}
+        {CONVERTERS.map((tool) => {
+          const IconComponent = getIcon(tool.iconName);
+          return (
+            <ToolCard 
+              key={tool.id}
+              title={tool.title} 
+              description={tool.description} 
+              iconNode={<IconComponent className="h-6 w-6" />} 
+              href={`/${tool.id}`} 
+              color={tool.color} 
+            />
+          )
+        })}
       </div>
     </div>
   )

@@ -10,12 +10,13 @@ interface ToolCardProps {
   id?: string
   title: string
   description: string
-  icon: LucideIcon
+  icon?: LucideIcon
+  iconNode?: React.ReactNode
   href: string
   color?: string
 }
 
-export function ToolCard({ id, title, description, icon: Icon, href, color = "bg-primary" }: ToolCardProps) {
+export function ToolCard({ id, title, description, icon: Icon, iconNode, href, color = "bg-primary" }: ToolCardProps) {
   const toolId = id || title.toLowerCase().replace(/\s+/g, "-")
   const { favorites, toggleFavorite, addRecentTool } = useStore()
   const [isMounted, setIsMounted] = useState(false)
@@ -38,7 +39,7 @@ export function ToolCard({ id, title, description, icon: Icon, href, color = "bg
       title,
       description,
       href,
-      icon: Icon.name,
+      icon: Icon?.name || "Wrench",
       category: "Utility",
       color
     } as any)
@@ -60,7 +61,7 @@ export function ToolCard({ id, title, description, icon: Icon, href, color = "bg
         )}
         <CardHeader className="flex flex-row items-center gap-4 pb-2">
           <div className={`${color} text-primary-foreground p-2.5 rounded-xl transition-transform group-hover:scale-110`}>
-            <Icon className="h-6 w-6" />
+            {iconNode ? iconNode : (Icon && <Icon className="h-6 w-6" />)}
           </div>
           <div className="space-y-1 pr-8">
             <CardTitle className="text-lg">{title}</CardTitle>
