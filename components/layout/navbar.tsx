@@ -65,15 +65,15 @@ export function Navbar() {
             </div>
             <ModeToggle />
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger render={
                 <Button variant="ghost" size="icon" className="md:hidden rounded-full">
                   <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle Menu</span>
                 </Button>
-              </DropdownMenuTrigger>
+              } />
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/file-converter">File Converter</Link>
+                <DropdownMenuItem render={<Link href="/file-converter" />}>
+                  File Converter
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
