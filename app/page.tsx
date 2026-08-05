@@ -3,6 +3,7 @@ import { AdBanner } from "@/components/ads/AdBanner"
 import { ToolCard } from "@/components/tools/ToolCard"
 import { FileText, Image as ImageIcon, Video, Music, Wrench } from "lucide-react"
 import Link from "next/link"
+import { UserToolsSections } from "@/components/tools/UserToolsSections"
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
       <div className="container mx-auto px-4 sm:px-8 py-8">
         <AdBanner dataAdSlot="1234567890" className="mb-16" />
         
-        {/* Categories placeholder removed to prevent 404s */}
+        <UserToolsSections />
 
         <section className="mb-20" id="tools">
           <div className="flex flex-col items-center mb-10 text-center">

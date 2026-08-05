@@ -20,6 +20,7 @@
     "framer-motion": "^12.43.0",
     "jsbarcode": "^3.12.3",
     "jspdf": "^4.2.1",
+    "jszip": "^3.10.1",
     "lucide-react": "^1.28.0",
     "marked": "^18.0.7",
     "next": "16.2.12",
@@ -33,11 +34,13 @@
     "react-hook-form": "^7.83.0",
     "tailwind-merge": "^3.6.0",
     "turndown": "^7.2.4",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/jsbarcode": "^3.11.4",
+    "@types/jszip": "^3.4.1",
     "@types/marked": "^6.0.0",
     "@types/node": "^20",
     "@types/pdfjs-dist": "^2.10.378",
